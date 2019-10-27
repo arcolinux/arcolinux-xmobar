@@ -1,0 +1,24 @@
+#!/bin/bash
+# Get the maximum volume of any pulseaudio sink channel
+# amixer get Master | egrep -o "[0-9]+%"
+mute=$(amixer get Master | awk  '/'Front' 'Left:' 'Playback'/  {print $6}')
+
+vol=$(amixer get Master | awk -F'[]%[]' '/%/ {if ($7 == "off") { print "MM" } else { print $2 }}' | head -n 1)
+
+if [ "$vol" -le "30" -a "$mute" = "[on]" ]
+	then echo "<fc=white><fn=2>  </fn></fc><fc=white>$vol% </fc>"
+elif [ "$vol" -le "60" -a "$mute" = "[on]" ]
+	then echo "<fc=white><fn=2>  </fn></fc><fc=white>$vol% </fc>"
+elif [ "$vol" -le "90" -a "$mute" = "[on]" ]
+	then echo "<fc=white><fn=2>  </fn></fc><fc=white>$vol% </fc>"
+elif [ "$vol" -gt "90" -a "$mute" = "[on]" ]
+	then echo "<fc=white><fn=2>  </fn></fc><fc=white>$vol% </fc>"
+
+elif [ "$mute" = "[off]" ]
+	then echo "<fc=white><fn=2>  </fn></fc><fc=white> Mute </fc>"
+else
+	echo  echo "<fc=white><fn=2>  </fn></fc><fc=white>$vol% </fc>"
+
+fi
+
+exit 0

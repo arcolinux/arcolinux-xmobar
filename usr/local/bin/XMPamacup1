@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+pkexec  XMPamacup
+exit 0

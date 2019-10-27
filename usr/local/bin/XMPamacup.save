@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+users="$(who | awk '{print $1}' | sort -u | grep -v root)"
+
+
+LOGFILE=/var/log/XMpacman.log
+
+line=` cat /var/log/XMpacman.log | wc -l `
+
+# pacman update
+
+. /etc/profile &&  (echo; date; pacman -Syuq --noconfirm) &>>$LOGFILE || (echo ‘pacman failed!’; tail $LOGFILE; false) 
+
+
+
+line1=`cat /var/log/XMpacman.log | wc -l ` 
+
+if [[ $line -eq $line1 ]]
+      then sudo -u  $users  DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-se$
+else
+      sudo -u  $users  DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send  -i $
+fi
+
+
+
+update
+noti

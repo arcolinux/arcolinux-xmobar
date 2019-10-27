@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+users="$(who | awk '{print $1}' | sort -u | grep -v root)"
+uid=$(id -u $users
+display=":$(ls /tmp/.X11-unix/* | sed 's#/tmp/.X11-unix/X##' | head -n 1)")
+
+
+LOGFILE=/var/log/XMpacman.log
+
+line=` cat /var/log/XMpacman.log | wc -l `
+
+# pacman update
+
+ (echo; date; sudo pacman -Syuq --noconfirm) &>>$LOGFILE || (echo ‘pacman failed!’; tail $LOGFILE; false) 
+
+
+
+line1=`cat /var/log/XMpacman.log | wc -l ` 
+
+if [[ $line -eq $line1 ]]
+        then sudo -u $users  DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus notify-send  -i face-uncertain  "ERROR! Pacman no Update"                                    
+else
+      sudo -u $users  DISPLAY=$display DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus notify-send  -i face-smile  "Update Complete"
+
+fi
+exit 0
