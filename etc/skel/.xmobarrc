@@ -2,8 +2,8 @@
 -- https://github.com/krive001/xmonad-xmobar
 
 Config {
-    font = "xft:Noto Sans LGC:size=11:style=Regular",
-    additionalFonts = ["xft:Noto Sans:size=10:style=Bold","xft:FontAwesome:style=Regular:size=13"]
+    font = "xft:Noto Sans LGC:size=13:style=Regular",
+    additionalFonts = ["xft:Noto Sans:size=13:style=Bold","xft:FontAwesome:style=Regular:size=13"]
    , bgColor          = "#2F343F"
    , fgColor          = "white"
    , position         = TopSize C 100 30
@@ -21,9 +21,9 @@ Config {
    , persistent       = True
    , sepChar          = "%"
    , alignSep         = "}{"
-   , template         = "<fc=white><fn=2><action=button=4><action=button=5>%UnsafeStdinReader%</action></action></fn></fc>}<action=`gsimplecal` button=1>%date%</action>{<fc=white> %update% |<fn=2>  </fn></fc> %kbd% | %coretemp% | %multicpu% | %memory% | <action=`pavucontrol` button=3><action=`XMMute` button=1><action=button=4><action=button=5>%XVol% </action></action></action></action>"
+   , template         = "<fc=white><fn=2><action=button=4><action=button=5>%UnsafeStdinReader%</action></action></fn></fc>}<action=`gsimplecal` button=1><fn=2>  </fn>%date%</action>{<fc=white> %update% </fc>|<fn=2>  </fn> <fc=white> %kblayout% </fc> | %coretemp% | %multicpu% | %memory% | <fn=2>  </fn> <action=`pavucontrol` button=3><action=`XMMute` button=1><action=button=4><action=button=5>%XVol% </action></action></action></action>   "
    , commands         =
-      [ Run MultiCpu                            [ "--template" , "<fc=white><fn=2>  </fn></fc><fc=white></fc><total> %"
+      [ Run MultiCpu                            [ "--template" , "<fc=white><fn=2>   </fn></fc><fc=white></fc><total> %"
                                                 , "--Low"      , "50"        -- units: %
                                                 , "--High"     , "85"        -- units: %
                                                 , "--low"      , "#ffffff"
@@ -31,7 +31,7 @@ Config {
                                                 , "--high"     , "#fd0537"
                                                 ] 10
 
-      , Run CoreTemp                            [ "--template" , "<fc=white><fn=2>  </fn></fc><fc=green></fc><core0> °C"
+      , Run CoreTemp                            [ "--template" , "<fc=white><fn=2>  </fn></fc><fc=green></fc><core0> °C"
                                                 , "--Low"      , "2"         -- units: °C
                                                 , "--High"     , "80"        -- units: °C
                                                 , "--low"      , "#ffffff"
@@ -39,7 +39,7 @@ Config {
                                                 , "--high"     , "#fd0537"
                                                 ] 10
 
-      , Run Memory                              [ "--template" ,"<fc=white><fn=2> </fn></fc><fc=white></fc><usedratio> %"
+      , Run Memory                              [ "--template" ,"<fc=white><fn=2>   </fn></fc><fc=white></fc><usedratio> %"
                                                 ] 10
 
 
@@ -47,11 +47,15 @@ Config {
 --      , Run Wireless           "wlp0s20u2u3"        ["-t", "<fc=green>Wifi:</fc> <quality>"
 --                                                ] 10
 
-      , Run Com "/bin/bash" ["-c", "XMgetvolume"]  "XVol" 10
+      , Run Com "/bin/bash" ["-c", "XMgetvolume | tr -d ' '"]  "XVol" 10
 
+--Kbd is tempoarally deprecated
+--      , Run Kbd                                [ ("be" , "<fc=#FFFFFF>BE</fc>")
+--                                               , ("us" , "<fc=#FFFFFF>US</fc>")]
 
-      , Run Kbd                                [ ("be" , "<fc=#FFFFFF>BE</fc>")
-                                                , ("us" , "<fc=#FFFFFF>US</fc>")]
+-- Show keyboard layout
+
+      , Run Com "/bin/bash" ["-c", "setxkbmap -query | grep layout | awk '{print$2}'"] "kblayout" 30 
 
       , Run UnsafeStdinReader
 
